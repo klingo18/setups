@@ -22,7 +22,7 @@ export const HYPERLIQUID = {
 };
 
 export const MESSAGES = {
-  WALLET_NOT_DETECTED: 'MetaMask not detected. Please install MetaMask.',
+  WALLET_NOT_DETECTED: 'Wallet not detected. Please install a web3 wallet.',
   CONNECT_FIRST: 'Please connect your wallet first.',
   SWITCH_TO_ARBITRUM: 'Please switch to Arbitrum network.',
   BUILDER_FEE_SUCCESS: 'Builder Fee Approved Successfully! Welcome to EV+',

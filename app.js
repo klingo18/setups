@@ -84,7 +84,7 @@ function EVPlusApp() {
     
     // Show helpful message
     setTimeout(() => {
-      setMessage('To switch wallets: Click "Connect MetaMask" and select a different account in the popup.');
+      setMessage('To switch wallets: Click "Connect Wallet" and select a different account in the popup.');
       setMessageType('info');
     }, 100);
   };
@@ -358,12 +358,12 @@ function EVPlusApp() {
       currentStep === 0 && React.createElement('div', { className: 'step-content' },
         React.createElement('h2', null, 'Connect Your Wallet'),
         React.createElement('p', { className: 'step-description' },
-          'Connect your MetaMask wallet to get started with EV+ on Hyperliquid'
+          'Connect your wallet to get started with EV+ on Hyperliquid'
         ),
         !isConnected && React.createElement('button', {
           onClick: connectWallet,
           className: 'btn-primary btn-large'
-        }, 'Connect MetaMask'),
+        }, 'Connect Wallet'),
         isConnected && !isArbitrum && React.createElement('div', null,
           React.createElement('div', { className: 'alert alert-warning' },
             'Please switch to Arbitrum network'

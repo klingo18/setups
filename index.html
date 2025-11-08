@@ -90,7 +90,11 @@
            display: flex;
            align-items: center;
            gap: 1rem;
-           justify-content: center;
+       }
+
+       .wallet-badge-container {
+           position: absolute;
+           right: 1.5rem;
        }
 
        .logo > div {
@@ -121,10 +125,6 @@
            margin-top: -0.25rem;
        }
 
-       .wallet-badge-container {
-           position: relative;
-       }
-
        .wallet-badge {
            display: flex;
            align-items: center;
@@ -137,8 +137,6 @@
            font-weight: 600;
            cursor: pointer;
            transition: all 0.2s ease;
-           position: absolute;
-           right: 0;
        }
 
        .wallet-badge:hover {
@@ -255,7 +253,7 @@
            width: 32px;
            height: 32px;
            object-fit: contain;
-           filter: brightness(0.7) saturate(0.6);
+           filter: brightness(0.8) grayscale(0.2);
            transition: filter 0.3s ease;
        }
 
@@ -269,7 +267,7 @@
        .step.active .step-number img {
            width: 34px;
            height: 34px;
-           filter: brightness(1.3) saturate(1.1) drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+           filter: brightness(1.1) grayscale(0) drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
        }
 
        .step.completed .step-number {
@@ -281,7 +279,7 @@
        .step.completed .step-number img {
            width: 34px;
            height: 34px;
-           filter: brightness(1.2) saturate(1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
+           filter: brightness(1.05) grayscale(0) drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
        }
 
        .step-title {
@@ -656,7 +654,7 @@
            width: 72px;
            height: 72px;
            object-fit: contain;
-           filter: brightness(1.3) drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+           filter: brightness(1.05) drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
        }
 
        @keyframes scaleIn {

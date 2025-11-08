@@ -12,7 +12,7 @@ export function useWallet() {
   // Define checkExistingConnection before useEffect
   const checkExistingConnection = async () => {
     if (!window.ethereum) {
-      setWalletStatus('MetaMask Not Detected');
+      setWalletStatus('Wallet Not Detected');
       return;
     }
 
@@ -90,7 +90,7 @@ export function useWallet() {
 
   const connectWallet = async () => {
     if (!window.ethereum) {
-      setWalletStatus('MetaMask Not Detected');
+      setWalletStatus('Wallet Not Detected');
       return false;
     }
 
