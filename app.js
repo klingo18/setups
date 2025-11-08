@@ -345,9 +345,7 @@ function EVPlusApp() {
           onClick: () => completedSteps.includes(idx) && setCurrentStep(idx)
         },
           React.createElement('div', { className: 'step-number' },
-            completedSteps.includes(idx) 
-              ? React.createElement('img', { src: 'icons/favicon/favicon-32x32.png', alt: 'Complete', style: { width: '28px', height: '28px' } })
-              : React.createElement('img', { src: step.icon, alt: step.title, style: { width: '28px', height: '28px' } })
+            React.createElement('img', { src: step.icon, alt: step.title })
           ),
           React.createElement('div', { className: 'step-title' }, step.title)
         )
@@ -377,7 +375,7 @@ function EVPlusApp() {
         ),
         isConnected && isArbitrum && React.createElement('div', { className: 'success-check' },
           React.createElement('div', { className: 'check-icon' }, 
-            React.createElement('img', { src: 'icons/favicon/android-chrome-192x192.png', alt: 'Success', style: { width: '60px', height: '60px' } })
+            React.createElement('img', { src: 'icons/favicon/android-chrome-192x192.png', alt: 'Success' })
           ),
           React.createElement('p', null, 'Wallet connected & ready!')
         )
@@ -457,7 +455,7 @@ function EVPlusApp() {
       currentStep === 4 && React.createElement('div', { className: 'step-content' },
         React.createElement('div', { className: 'success-banner' },
           React.createElement('div', { className: 'success-icon-large' }, 
-            React.createElement('img', { src: 'icons/favicon/android-chrome-192x192.png', alt: 'Success', style: { width: '80px', height: '80px' } })
+            React.createElement('img', { src: 'icons/favicon/android-chrome-192x192.png', alt: 'Success' })
           ),
           React.createElement('h2', null, 'Setup Complete!'),
           React.createElement('p', { className: 'success-subtitle' }, 
