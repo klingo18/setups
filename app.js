@@ -90,11 +90,11 @@ function EVPlusApp() {
   };
 
   const steps = [
-    { id: 'connect', title: 'Connect Wallet', icon: 'user.png' },
-    { id: 'deposit', title: 'Deposit USDC', icon: 'wallet.png' },
-    { id: 'builder', title: 'Approve Builder', icon: 'lightning.png' },
-    { id: 'agent', title: 'Create Agent', icon: 'bot.png' },
-    { id: 'complete', title: 'Setup Complete', icon: 'logo.png' }
+    { id: 'connect', title: 'Connect Wallet', icon: 'icons/user.png' },
+    { id: 'deposit', title: 'Deposit USDC', icon: 'icons/wallet.png' },
+    { id: 'builder', title: 'Approve Builder', icon: 'icons/lightning.png' },
+    { id: 'agent', title: 'Create Agent', icon: 'icons/bot.png' },
+    { id: 'complete', title: 'Setup Complete', icon: 'icons/favicon/favicon-32x32.png' }
   ];
 
   const handleBuilderFee = async () => {
@@ -307,7 +307,7 @@ function EVPlusApp() {
     // Header
     React.createElement('div', { className: 'header' },
       React.createElement('div', { className: 'logo' },
-        React.createElement('img', { src: 'logo.png', alt: 'EV+', className: 'logo-image' }),
+        React.createElement('img', { src: 'icons/favicon/android-chrome-192x192.png', alt: 'EV+', className: 'logo-image' }),
         React.createElement('div', null,
           React.createElement('span', { className: 'logo-text' }, 'EV+'),
           React.createElement('span', { className: 'logo-tagline' }, 'Hyperliquid Onboarding')
@@ -346,7 +346,7 @@ function EVPlusApp() {
         },
           React.createElement('div', { className: 'step-number' },
             completedSteps.includes(idx) 
-              ? React.createElement('img', { src: 'logo.png', alt: 'Complete', style: { width: '28px', height: '28px' } })
+              ? React.createElement('img', { src: 'icons/favicon/favicon-32x32.png', alt: 'Complete', style: { width: '28px', height: '28px' } })
               : React.createElement('img', { src: step.icon, alt: step.title, style: { width: '28px', height: '28px' } })
           ),
           React.createElement('div', { className: 'step-title' }, step.title)
@@ -377,7 +377,7 @@ function EVPlusApp() {
         ),
         isConnected && isArbitrum && React.createElement('div', { className: 'success-check' },
           React.createElement('div', { className: 'check-icon' }, 
-            React.createElement('img', { src: 'logo.png', alt: 'Success', style: { width: '60px', height: '60px' } })
+            React.createElement('img', { src: 'icons/favicon/android-chrome-192x192.png', alt: 'Success', style: { width: '60px', height: '60px' } })
           ),
           React.createElement('p', null, 'Wallet connected & ready!')
         )
@@ -457,7 +457,7 @@ function EVPlusApp() {
       currentStep === 4 && React.createElement('div', { className: 'step-content' },
         React.createElement('div', { className: 'success-banner' },
           React.createElement('div', { className: 'success-icon-large' }, 
-            React.createElement('img', { src: 'logo.png', alt: 'Success', style: { width: '80px', height: '80px' } })
+            React.createElement('img', { src: 'icons/favicon/android-chrome-192x192.png', alt: 'Success', style: { width: '80px', height: '80px' } })
           ),
           React.createElement('h2', null, 'Setup Complete!'),
           React.createElement('p', { className: 'success-subtitle' }, 
