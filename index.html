@@ -74,14 +74,14 @@
        /* Header */
        .header {
            display: flex;
-           justify-content: space-between;
+           justify-content: center;
            align-items: center;
            margin-bottom: 3rem;
            padding: 1.5rem;
            background: var(--card-bg);
            backdrop-filter: blur(20px);
            border-radius: 1rem;
-           border: 1px solid var(--border);
+           border: 1px solid rgba(87, 90, 94, 0.3);
            position: relative;
            z-index: 100;
        }
@@ -90,6 +90,7 @@
            display: flex;
            align-items: center;
            gap: 1rem;
+           justify-content: center;
        }
 
        .logo > div {
@@ -129,17 +130,20 @@
            align-items: center;
            gap: 0.5rem;
            padding: 0.75rem 1.25rem;
-           background: rgba(0, 191, 99, 0.1);
-           border: 1px solid var(--primary);
+           background: rgba(87, 90, 94, 0.2);
+           border: 1px solid rgba(200, 203, 206, 0.3);
            border-radius: 2rem;
            font-size: 0.875rem;
            font-weight: 600;
            cursor: pointer;
            transition: all 0.2s ease;
+           position: absolute;
+           right: 0;
        }
 
        .wallet-badge:hover {
-           background: rgba(0, 191, 99, 0.15);
+           background: rgba(87, 90, 94, 0.3);
+           border-color: var(--primary);
            transform: translateY(-1px);
        }
 
@@ -218,7 +222,7 @@
            left: 56px;
            right: 56px;
            height: 2px;
-           background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
+           background: linear-gradient(90deg, rgba(87, 90, 94, 0.3) 0%, rgba(0, 191, 99, 0.5) 100%);
            z-index: 0;
        }
 
@@ -239,7 +243,7 @@
            height: 56px;
            border-radius: 50%;
            background: var(--bg-dark);
-           border: 2px solid var(--border);
+           border: 2px solid rgba(87, 90, 94, 0.4);
            display: flex;
            align-items: center;
            justify-content: center;
@@ -297,7 +301,7 @@
            background: var(--card-bg);
            backdrop-filter: blur(20px);
            border-radius: 1.5rem;
-           border: 1px solid var(--border);
+           border: 1px solid rgba(87, 90, 94, 0.3);
            padding: 3rem;
            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
            min-height: 500px;
@@ -392,8 +396,8 @@
 
        /* Info Boxes */
        .info-box {
-           background: rgba(0, 191, 99, 0.05);
-           border: 1px solid rgba(0, 191, 99, 0.2);
+           background: rgba(87, 90, 94, 0.15);
+           border: 1px solid rgba(87, 90, 94, 0.3);
            border-radius: 1rem;
            padding: 1.5rem;
            margin-bottom: 2rem;
@@ -418,12 +422,12 @@
        }
 
        .info-row code {
-           background: rgba(0, 191, 99, 0.1);
+           background: rgba(0, 0, 0, 0.4);
            padding: 0.25rem 0.75rem;
            border-radius: 0.5rem;
            font-family: 'Monaco', 'Courier New', monospace;
            font-size: 0.875rem;
-           color: var(--primary-light);
+           color: var(--text-secondary);
        }
 
        /* Balance Grid */
@@ -435,8 +439,8 @@
        }
 
        .balance-card {
-           background: rgba(0, 191, 99, 0.05);
-           border: 1px solid rgba(0, 191, 99, 0.2);
+           background: rgba(87, 90, 94, 0.15);
+           border: 1px solid rgba(87, 90, 94, 0.3);
            border-radius: 1rem;
            padding: 1.5rem;
            text-align: center;
@@ -491,8 +495,8 @@
        }
 
        .alert-info {
-           background: rgba(0, 191, 99, 0.08);
-           border: 1px solid rgba(0, 191, 99, 0.25);
+           background: rgba(87, 90, 94, 0.2);
+           border: 1px solid rgba(87, 90, 94, 0.4);
            color: var(--text-secondary);
        }
 
@@ -535,8 +539,8 @@
        }
 
        .credentials-box {
-           background: rgba(0, 191, 99, 0.05);
-           border: 1px solid rgba(0, 191, 99, 0.2);
+           background: rgba(87, 90, 94, 0.15);
+           border: 1px solid rgba(87, 90, 94, 0.3);
            border-radius: 1rem;
            padding: 1.5rem;
            margin-bottom: 2rem;
@@ -561,14 +565,14 @@
 
        .credential-value {
            display: block;
-           background: rgba(0, 0, 0, 0.4);
+           background: rgba(0, 0, 0, 0.5);
            padding: 0.75rem 1rem;
            border-radius: 0.5rem;
            font-family: 'Monaco', 'Courier New', monospace;
            font-size: 0.875rem;
-           color: var(--primary-light);
+           color: var(--text-secondary);
            word-break: break-all;
-           border: 1px solid rgba(0, 191, 99, 0.2);
+           border: 1px solid rgba(87, 90, 94, 0.4);
        }
 
        .credential-value.secret {
