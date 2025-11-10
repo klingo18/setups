@@ -307,15 +307,10 @@ function EVPlusApp() {
     // Header
     React.createElement('div', { className: 'header' },
       React.createElement('div', { className: 'logo' },
-        React.createElement('img', { src: 'icons/favicon/android-chrome-192x192.png', alt: 'EV+', className: 'logo-image' }),
-        React.createElement('div', null,
-          React.createElement('span', { className: 'logo-text' }, 'EV+'),
-          React.createElement('span', { className: 'logo-tagline' }, 'Hyperliquid Onboarding')
-        )
+        React.createElement('img', { src: 'icons/favicon/android-chrome-192x192.png', alt: 'EV+', className: 'logo-image' })
       ),
       isConnected && React.createElement('div', { 
-        className: 'wallet-badge-container',
-        style: { position: 'relative' }
+        className: 'wallet-badge-container'
       },
         React.createElement('div', { 
           className: 'wallet-badge',
