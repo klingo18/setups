@@ -222,7 +222,7 @@
            left: 56px;
            right: 56px;
            height: 2px;
-           background: linear-gradient(90deg, rgba(87, 90, 94, 0.3) 0%, rgba(0, 191, 99, 0.5) 100%);
+           background: linear-gradient(90deg, rgba(87, 90, 94, 0.3) 0%, rgba(200, 203, 206, 0.4) 100%);
            z-index: 0;
        }
 
@@ -260,28 +260,28 @@
        }
 
        .step.active .step-number {
-           background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-           border-color: var(--primary);
-           box-shadow: 0 0 15px rgba(0, 191, 99, 0.25);
+           background: linear-gradient(135deg, rgba(200, 203, 206, 0.3) 0%, rgba(87, 90, 94, 0.4) 100%);
+           border-color: rgba(200, 203, 206, 0.6);
+           box-shadow: 0 0 15px rgba(200, 203, 206, 0.2);
            transform: scale(1.15);
        }
 
        .step.active .step-number img {
            width: 34px;
            height: 34px;
-           filter: brightness(0.95) grayscale(0.1) opacity(1) drop-shadow(0 0 2px rgba(255, 255, 255, 0.15));
+           filter: brightness(1.1) grayscale(0) opacity(1) drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
        }
 
        .step.completed .step-number {
-           background: var(--primary);
-           border-color: var(--primary);
-           box-shadow: 0 0 12px rgba(0, 191, 99, 0.15);
+           background: linear-gradient(135deg, rgba(200, 203, 206, 0.25) 0%, rgba(87, 90, 94, 0.35) 100%);
+           border-color: rgba(200, 203, 206, 0.5);
+           box-shadow: 0 0 12px rgba(200, 203, 206, 0.15);
        }
 
        .step.completed .step-number img {
            width: 34px;
            height: 34px;
-           filter: brightness(0.9) grayscale(0.15) opacity(0.9) drop-shadow(0 0 1px rgba(255, 255, 255, 0.1));
+           filter: brightness(1) grayscale(0) opacity(0.95) drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
        }
 
        .step-title {
@@ -292,7 +292,7 @@
        }
 
        .step.active .step-title {
-           color: var(--primary);
+           color: var(--text-primary);
            font-weight: 600;
        }
 
