@@ -19,6 +19,7 @@ function EVPlusApp() {
   const [messageType, setMessageType] = useState('');
   const [showDisconnect, setShowDisconnect] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
+  const [depositAmount, setDepositAmount] = useState('');
 
   // Set up wallet client
   useEffect(() => {
@@ -205,6 +206,28 @@ function EVPlusApp() {
       return;
     }
 
+    // Validate deposit amount
+    const amount = parseFloat(depositAmount);
+    const availableBalance = parseFloat(usdcBalance);
+    
+    if (!amount || amount <= 0) {
+      setMessage('Please enter a valid deposit amount');
+      setMessageType('error');
+      return;
+    }
+    
+    if (amount < HYPERLIQUID.MIN_DEPOSIT_USDC) {
+      setMessage(`Minimum deposit is ${HYPERLIQUID.MIN_DEPOSIT_USDC} USDC`);
+      setMessageType('error');
+      return;
+    }
+    
+    if (amount > availableBalance) {
+      setMessage(`Amount exceeds available balance of ${availableBalance} USDC`);
+      setMessageType('error');
+      return;
+    }
+
     try {
       setIsProcessing(true);
       setMessage('Processing deposit...');
@@ -213,19 +236,8 @@ function EVPlusApp() {
       const accounts = await window.ethereum.request({ method: 'eth_accounts' });
       const account = accounts[0];
 
-      const balanceHex = await window.ethereum.request({
-        method: 'eth_call',
-        params: [{
-          to: CONTRACTS.USDC_ARBITRUM,
-          data: '0x70a08231000000000000000000000000' + account.slice(2)
-        }, 'latest']
-      });
-
-      const balance = parseInt(balanceHex, 16);
-
-      if (balance / 1e6 < HYPERLIQUID.MIN_DEPOSIT_USDC) {
-        throw new Error(`Minimum ${HYPERLIQUID.MIN_DEPOSIT_USDC} USDC required`);
-      }
+      // Convert user amount to USDC wei (6 decimals)
+      const depositAmountWei = Math.floor(amount * 1e6);
 
       // Approve
       const approveTx = await window.ethereum.request({
@@ -235,7 +247,7 @@ function EVPlusApp() {
           to: CONTRACTS.USDC_ARBITRUM,
           data: '0x095ea7b3' + 
                 CONTRACTS.HYPERLIQUID_BRIDGE.slice(2).padStart(64, '0') + 
-                balance.toString(16).padStart(64, '0')
+                depositAmountWei.toString(16).padStart(64, '0')
         }]
       });
 
@@ -250,7 +262,7 @@ function EVPlusApp() {
           to: CONTRACTS.USDC_ARBITRUM,
           data: '0xa9059cbb' + 
                 CONTRACTS.HYPERLIQUID_BRIDGE.slice(2).padStart(64, '0') + 
-                balance.toString(16).padStart(64, '0')
+                depositAmountWei.toString(16).padStart(64, '0')
         }]
       });
 
@@ -262,16 +274,18 @@ function EVPlusApp() {
       if (currentStep === 1) {
         // First deposit, move to builder fee
         setCompletedSteps([...completedSteps, 1]);
-        setMessage(`${MESSAGES.DEPOSIT_SUCCESS} ${(balance / 1e6).toFixed(2)} USDC deposited!`);
+        setMessage(`${MESSAGES.DEPOSIT_SUCCESS} ${amount.toFixed(2)} USDC deposited!`);
         setMessageType('success');
         setTimeout(() => {
           setCurrentStep(2); // Go to builder fee
           setMessage('');
+          setDepositAmount(''); // Reset for next time
         }, 2000);
       } else {
         // Optional top-up after agent creation
-        setMessage(`${MESSAGES.DEPOSIT_SUCCESS} ${(balance / 1e6).toFixed(2)} USDC deposited! Ready to trade.`);
+        setMessage(`${MESSAGES.DEPOSIT_SUCCESS} ${amount.toFixed(2)} USDC deposited! Ready to trade.`);
         setMessageType('success');
+        setDepositAmount(''); // Reset for next time
       }
 
     } catch (error) {
@@ -392,12 +406,66 @@ function EVPlusApp() {
             React.createElement('div', { className: 'balance-value' }, `${hlUsdcBalance} USDC`)
           )
         ),
-        parseFloat(hlUsdcBalance) < HYPERLIQUID.MIN_DEPOSIT_USDC && React.createElement('div', { className: 'alert alert-warning' },
+        parseFloat(hlUsdcBalance) < HYPERLIQUID.MIN_DEPOSIT_USDC && React.createElement('div', { className: 'info-box', style: { marginTop: '1.5rem' } },
+          React.createElement('div', { style: { marginBottom: '1rem' } },
+            React.createElement('label', {
+              style: {
+                display: 'block',
+                color: 'var(--text-secondary)',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                marginBottom: '0.5rem'
+              }
+            }, 'Deposit Amount (USDC)'),
+            React.createElement('div', { style: { display: 'flex', gap: '0.5rem', alignItems: 'center' } },
+              React.createElement('input', {
+                type: 'number',
+                value: depositAmount,
+                onChange: (e) => setDepositAmount(e.target.value),
+                min: HYPERLIQUID.MIN_DEPOSIT_USDC,
+                max: usdcBalance,
+                step: '0.01',
+                placeholder: `Min: ${HYPERLIQUID.MIN_DEPOSIT_USDC}`,
+                style: {
+                  flex: 1,
+                  background: 'rgba(0, 0, 0, 0.4)',
+                  border: '1px solid rgba(87, 90, 94, 0.4)',
+                  borderRadius: '0.5rem',
+                  padding: '0.75rem 1rem',
+                  color: 'var(--text-primary)',
+                  fontSize: '1rem',
+                  outline: 'none'
+                }
+              }),
+              React.createElement('button', {
+                onClick: () => setDepositAmount(usdcBalance),
+                className: 'btn-secondary',
+                type: 'button',
+                style: { padding: '0.75rem 1.25rem', margin: 0 }
+              }, 'Max')
+            ),
+            React.createElement('p', {
+              style: {
+                color: 'var(--text-muted)',
+                fontSize: '0.75rem',
+                marginTop: '0.5rem',
+                marginBottom: 0
+              }
+            }, `Available: ${usdcBalance} USDC`)
+          ),
+          parseFloat(depositAmount) > parseFloat(usdcBalance) && React.createElement('div', { className: 'alert alert-error', style: { marginTop: '0.5rem' } },
+            'Amount exceeds available balance'
+          ),
+          parseFloat(depositAmount) < HYPERLIQUID.MIN_DEPOSIT_USDC && depositAmount && React.createElement('div', { className: 'alert alert-warning', style: { marginTop: '0.5rem' } },
+            `Minimum deposit is ${HYPERLIQUID.MIN_DEPOSIT_USDC} USDC`
+          )
+        ),
+        parseFloat(hlUsdcBalance) < HYPERLIQUID.MIN_DEPOSIT_USDC && React.createElement('div', { className: 'alert alert-warning', style: { marginTop: '1rem' } },
           `You need at least ${HYPERLIQUID.MIN_DEPOSIT_USDC} USDC on Hyperliquid to continue`
         ),
         React.createElement('button', {
           onClick: handleDeposit,
-          disabled: isProcessing,
+          disabled: isProcessing || (!depositAmount && parseFloat(hlUsdcBalance) < HYPERLIQUID.MIN_DEPOSIT_USDC) || (depositAmount && (parseFloat(depositAmount) < HYPERLIQUID.MIN_DEPOSIT_USDC || parseFloat(depositAmount) > parseFloat(usdcBalance))),
           className: 'btn-primary btn-large'
         }, isProcessing ? 'Processing...' : parseFloat(hlUsdcBalance) >= HYPERLIQUID.MIN_DEPOSIT_USDC ? 'Continue to Builder Fee' : 'Deposit to Hyperliquid')
       ),
@@ -508,9 +576,55 @@ function EVPlusApp() {
             React.createElement('div', { className: 'alert alert-warning', style: { marginTop: '1rem' } },
               `Recommended: $300+ USDC for optimal trading. Current balance: $${parseFloat(hlUsdcBalance).toFixed(2)}`
             ),
+            React.createElement('div', { className: 'info-box', style: { marginTop: '1rem' } },
+              React.createElement('label', {
+                style: {
+                  display: 'block',
+                  color: 'var(--text-secondary)',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  marginBottom: '0.5rem'
+                }
+              }, 'Deposit Amount (USDC)'),
+              React.createElement('div', { style: { display: 'flex', gap: '0.5rem', alignItems: 'center' } },
+                React.createElement('input', {
+                  type: 'number',
+                  value: depositAmount,
+                  onChange: (e) => setDepositAmount(e.target.value),
+                  min: HYPERLIQUID.MIN_DEPOSIT_USDC,
+                  max: usdcBalance,
+                  step: '0.01',
+                  placeholder: `Min: ${HYPERLIQUID.MIN_DEPOSIT_USDC}`,
+                  style: {
+                    flex: 1,
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    border: '1px solid rgba(87, 90, 94, 0.4)',
+                    borderRadius: '0.5rem',
+                    padding: '0.75rem 1rem',
+                    color: 'var(--text-primary)',
+                    fontSize: '1rem',
+                    outline: 'none'
+                  }
+                }),
+                React.createElement('button', {
+                  onClick: () => setDepositAmount(usdcBalance),
+                  className: 'btn-secondary',
+                  type: 'button',
+                  style: { padding: '0.75rem 1.25rem', margin: 0 }
+                }, 'Max')
+              ),
+              React.createElement('p', {
+                style: {
+                  color: 'var(--text-muted)',
+                  fontSize: '0.75rem',
+                  marginTop: '0.5rem',
+                  marginBottom: 0
+                }
+              }, `Available: ${usdcBalance} USDC`)
+            ),
             React.createElement('button', {
               onClick: handleDeposit,
-              disabled: isProcessing,
+              disabled: isProcessing || !depositAmount || parseFloat(depositAmount) < HYPERLIQUID.MIN_DEPOSIT_USDC || parseFloat(depositAmount) > parseFloat(usdcBalance),
               className: 'btn-primary',
               style: { marginTop: '1rem', width: '100%' }
             }, isProcessing ? 'Processing...' : 'Deposit More USDC')
