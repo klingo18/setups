@@ -32,21 +32,18 @@ function EVPlusApp() {
     }
   }, [walletAddress]);
 
-  // Auto-advance when connected and check deposit needs
+  // Auto-advance to deposit step when connected (no auto-skip)
   useEffect(() => {
     if (isConnected && isArbitrum && currentStep === 0) {
-      // Check if we need to deposit first
+      // Always advance to deposit step, never skip
+      setCurrentStep(1);
+      
+      // Show informational message about balance status
       const hlBalance = parseFloat(hlUsdcBalance);
       if (hlBalance >= HYPERLIQUID.MIN_DEPOSIT_USDC) {
-        // Has enough funds, skip deposit step
-        setCompletedSteps([1]);
-        setCurrentStep(2); // Go to builder fee
-        setMessage(`You have ${hlBalance.toFixed(2)} USDC on Hyperliquid`);
-        setMessageType('success');
-        setTimeout(() => setMessage(''), 3000);
-      } else {
-        // Needs to deposit first
-        setCurrentStep(1); // Go to deposit step
+        setMessage(`You have ${hlBalance.toFixed(2)} USDC on Hyperliquid - you can proceed or deposit more`);
+        setMessageType('info');
+        setTimeout(() => setMessage(''), 4000);
       }
     }
   }, [isConnected, isArbitrum, hlUsdcBalance]);
@@ -194,15 +191,10 @@ function EVPlusApp() {
   const handleDeposit = async () => {
     const currentHlBalance = parseFloat(hlUsdcBalance);
     
-    // If this is the first deposit step and they already have funds
-    if (currentStep === 1 && currentHlBalance >= HYPERLIQUID.MIN_DEPOSIT_USDC) {
-      setMessage(`You already have ${currentHlBalance.toFixed(2)} USDC on Hyperliquid!`);
-      setMessageType('success');
-      setCompletedSteps([...completedSteps, 1]);
-      setTimeout(() => {
-        setCurrentStep(2); // Go to builder fee
-        setMessage('');
-      }, 2000);
+    // If they already have sufficient funds, just show message (no auto-advance)
+    if (currentStep === 1 && currentHlBalance >= HYPERLIQUID.MIN_DEPOSIT_USDC && !depositAmount) {
+      setMessage(`You already have ${currentHlBalance.toFixed(2)} USDC on Hyperliquid. Use Next button to continue or deposit more.`);
+      setMessageType('info');
       return;
     }
 
@@ -271,22 +263,10 @@ function EVPlusApp() {
 
       await checkHLBalance(); // Refresh balance
       
-      if (currentStep === 1) {
-        // First deposit, move to builder fee
-        setCompletedSteps([...completedSteps, 1]);
-        setMessage(`${MESSAGES.DEPOSIT_SUCCESS} ${amount.toFixed(2)} USDC deposited!`);
-        setMessageType('success');
-        setTimeout(() => {
-          setCurrentStep(2); // Go to builder fee
-          setMessage('');
-          setDepositAmount(''); // Reset for next time
-        }, 2000);
-      } else {
-        // Optional top-up after agent creation
-        setMessage(`${MESSAGES.DEPOSIT_SUCCESS} ${amount.toFixed(2)} USDC deposited! Ready to trade.`);
-        setMessageType('success');
-        setDepositAmount(''); // Reset for next time
-      }
+      // Show success message, let user navigate manually
+      setMessage(`${MESSAGES.DEPOSIT_SUCCESS} ${amount.toFixed(2)} USDC deposited! Use Next to continue.`);
+      setMessageType('success');
+      setDepositAmount(''); // Reset for next time
 
     } catch (error) {
       setMessage(`Error: ${error.message}`);
@@ -351,7 +331,7 @@ function EVPlusApp() {
         React.createElement('div', {
           key: step.id,
           className: `step ${currentStep === idx ? 'active' : ''} ${completedSteps.includes(idx) ? 'completed' : ''}`,
-          onClick: () => completedSteps.includes(idx) && setCurrentStep(idx)
+          onClick: () => !isProcessing && setCurrentStep(idx)
         },
           React.createElement('div', { className: 'step-number' },
             React.createElement('img', { src: step.icon, alt: step.title })
@@ -467,7 +447,7 @@ function EVPlusApp() {
           onClick: handleDeposit,
           disabled: isProcessing || (!depositAmount && parseFloat(hlUsdcBalance) < HYPERLIQUID.MIN_DEPOSIT_USDC) || (depositAmount && (parseFloat(depositAmount) < HYPERLIQUID.MIN_DEPOSIT_USDC || parseFloat(depositAmount) > parseFloat(usdcBalance))),
           className: 'btn-primary btn-large'
-        }, isProcessing ? 'Processing...' : parseFloat(hlUsdcBalance) >= HYPERLIQUID.MIN_DEPOSIT_USDC ? 'Continue to Builder Fee' : 'Deposit to Hyperliquid')
+        }, isProcessing ? 'Processing...' : parseFloat(hlUsdcBalance) >= HYPERLIQUID.MIN_DEPOSIT_USDC ? 'Deposit More USDC' : 'Deposit to Hyperliquid')
       ),
 
       // Step 2: Builder Fee
@@ -647,9 +627,10 @@ function EVPlusApp() {
           className: 'btn-secondary',
           disabled: isProcessing
         }, '← Back'),
-        currentStep < 4 && completedSteps.includes(currentStep) && React.createElement('button', {
+        currentStep < 4 && React.createElement('button', {
           onClick: () => setCurrentStep(currentStep + 1),
-          className: 'btn-secondary'
+          className: 'btn-secondary',
+          disabled: isProcessing
         }, 'Next →')
       )
     )
