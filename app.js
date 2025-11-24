@@ -386,7 +386,7 @@ function EVPlusApp() {
             React.createElement('div', { className: 'balance-value' }, `${hlUsdcBalance} USDC`)
           )
         ),
-        parseFloat(hlUsdcBalance) < HYPERLIQUID.MIN_DEPOSIT_USDC && React.createElement('div', { className: 'info-box', style: { marginTop: '1.5rem' } },
+        React.createElement('div', { className: 'info-box', style: { marginTop: '1.5rem' } },
           React.createElement('div', { style: { marginBottom: '1rem' } },
             React.createElement('label', {
               style: {
@@ -445,7 +445,7 @@ function EVPlusApp() {
         ),
         React.createElement('button', {
           onClick: handleDeposit,
-          disabled: isProcessing || (!depositAmount && parseFloat(hlUsdcBalance) < HYPERLIQUID.MIN_DEPOSIT_USDC) || (depositAmount && (parseFloat(depositAmount) < HYPERLIQUID.MIN_DEPOSIT_USDC || parseFloat(depositAmount) > parseFloat(usdcBalance))),
+          disabled: isProcessing || !depositAmount || (depositAmount && (parseFloat(depositAmount) < HYPERLIQUID.MIN_DEPOSIT_USDC || parseFloat(depositAmount) > parseFloat(usdcBalance))),
           className: 'btn-primary btn-large'
         }, isProcessing ? 'Processing...' : parseFloat(hlUsdcBalance) >= HYPERLIQUID.MIN_DEPOSIT_USDC ? 'Deposit More USDC' : 'Deposit to Hyperliquid')
       ),
