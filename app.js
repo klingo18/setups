@@ -386,7 +386,7 @@ function EVPlusApp() {
             React.createElement('div', { className: 'balance-value' }, `${hlUsdcBalance} USDC`)
           )
         ),
-        React.createElement('div', { className: 'info-box', style: { marginTop: '1.5rem' } },
+        parseFloat(hlUsdcBalance) < HYPERLIQUID.MIN_DEPOSIT_USDC && React.createElement('div', { className: 'info-box', style: { marginTop: '1.5rem' } },
           React.createElement('div', { style: { marginBottom: '1rem' } },
             React.createElement('label', {
               style: {
@@ -440,15 +440,12 @@ function EVPlusApp() {
             `Minimum deposit is ${HYPERLIQUID.MIN_DEPOSIT_USDC} USDC`
           )
         ),
-        parseFloat(hlUsdcBalance) >= HYPERLIQUID.MIN_DEPOSIT_USDC && React.createElement('div', { className: 'alert alert-info', style: { marginTop: '1rem' } },
-          `You have ${parseFloat(hlUsdcBalance).toFixed(2)} USDC on Hyperliquid. You can proceed with Next or deposit more.`
-        ),
         parseFloat(hlUsdcBalance) < HYPERLIQUID.MIN_DEPOSIT_USDC && React.createElement('div', { className: 'alert alert-warning', style: { marginTop: '1rem' } },
           `You need at least ${HYPERLIQUID.MIN_DEPOSIT_USDC} USDC on Hyperliquid to continue`
         ),
         React.createElement('button', {
           onClick: handleDeposit,
-          disabled: isProcessing || !depositAmount || (depositAmount && (parseFloat(depositAmount) < HYPERLIQUID.MIN_DEPOSIT_USDC || parseFloat(depositAmount) > parseFloat(usdcBalance))),
+          disabled: isProcessing || (!depositAmount && parseFloat(hlUsdcBalance) < HYPERLIQUID.MIN_DEPOSIT_USDC) || (depositAmount && (parseFloat(depositAmount) < HYPERLIQUID.MIN_DEPOSIT_USDC || parseFloat(depositAmount) > parseFloat(usdcBalance))),
           className: 'btn-primary btn-large'
         }, isProcessing ? 'Processing...' : parseFloat(hlUsdcBalance) >= HYPERLIQUID.MIN_DEPOSIT_USDC ? 'Deposit More USDC' : 'Deposit to Hyperliquid')
       ),
