@@ -234,8 +234,10 @@ export function useUSDCBalance(walletAddress, chainId) {
       });
       
       const balanceNum = parseInt(balanceHex, 16) / 1e6;
-      setBalance(balanceNum.toFixed(2));
-      return balanceNum;
+      // Floor to 2 decimals to prevent trying to deposit more than available
+      const balanceFloored = Math.floor(balanceNum * 100) / 100;
+      setBalance(balanceFloored.toFixed(2));
+      return balanceFloored;
     } catch (error) {
       console.error('Error checking USDC balance:', error);
       setBalance('0');
@@ -287,9 +289,11 @@ export function useHyperliquidBalance(walletAddress) {
         balanceValue = data.crossMarginSummary.accountValue;
       }
 
-      const formatted = parseFloat(balanceValue).toFixed(2);
-      setBalance(formatted);
-      return parseFloat(formatted);
+      // Floor to 2 decimals to prevent precision issues
+      const balanceNum = parseFloat(balanceValue);
+      const balanceFloored = Math.floor(balanceNum * 100) / 100;
+      setBalance(balanceFloored.toFixed(2));
+      return balanceFloored;
     } catch (error) {
       console.error('Error checking Hyperliquid balance:', error);
       setBalance('0');
