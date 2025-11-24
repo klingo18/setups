@@ -231,20 +231,51 @@ function EVPlusApp() {
       // Convert user amount to USDC wei (6 decimals)
       const depositAmountWei = Math.floor(amount * 1e6);
 
-      // Approve
-      const approveTx = await window.ethereum.request({
-        method: 'eth_sendTransaction',
+      // Check current allowance before approving
+      const allowanceHex = await window.ethereum.request({
+        method: 'eth_call',
         params: [{
-          from: account,
           to: CONTRACTS.USDC_ARBITRUM,
-          data: '0x095ea7b3' + 
-                CONTRACTS.HYPERLIQUID_BRIDGE.slice(2).padStart(64, '0') + 
-                depositAmountWei.toString(16).padStart(64, '0')
-        }]
+          data: '0xdd62ed3e' + 
+                account.slice(2).padStart(64, '0') + 
+                CONTRACTS.HYPERLIQUID_BRIDGE.slice(2).padStart(64, '0')
+        }, 'latest']
       });
+      
+      const currentAllowance = parseInt(allowanceHex, 16);
+      
+      // Only approve if allowance is insufficient
+      if (currentAllowance < depositAmountWei) {
+        setMessage('Requesting approval...');
+        
+        const approveGasEstimate = await window.ethereum.request({
+          method: 'eth_estimateGas',
+          params: [{
+            from: account,
+            to: CONTRACTS.USDC_ARBITRUM,
+            data: '0x095ea7b3' + 
+                  CONTRACTS.HYPERLIQUID_BRIDGE.slice(2).padStart(64, '0') + 
+                  depositAmountWei.toString(16).padStart(64, '0')
+          }]
+        });
+        
+        const approveTx = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: account,
+            to: CONTRACTS.USDC_ARBITRUM,
+            data: '0x095ea7b3' + 
+                  CONTRACTS.HYPERLIQUID_BRIDGE.slice(2).padStart(64, '0') + 
+                  depositAmountWei.toString(16).padStart(64, '0'),
+            gas: approveGasEstimate
+          }]
+        });
 
-      setMessage('Waiting for approval confirmation...');
-      await waitForTx(approveTx);
+        setMessage('Waiting for approval confirmation...');
+        await waitForTx(approveTx);
+      } else {
+        setMessage('Approval already exists, proceeding with deposit...');
+      }
 
       // Transfer
       const depositTx = await window.ethereum.request({
@@ -261,7 +292,9 @@ function EVPlusApp() {
       setMessage('Confirming deposit...');
       await waitForTx(depositTx);
 
-      await checkHLBalance(); // Refresh balance
+      // Refresh both balances after successful deposit
+      await checkUSDCBalance(); // Refresh Arbitrum USDC balance
+      await checkHLBalance(); // Refresh Hyperliquid balance
       
       // Show success message, let user navigate manually
       setMessage(`${MESSAGES.DEPOSIT_SUCCESS} ${amount.toFixed(2)} USDC deposited! Use Next to continue.`);
