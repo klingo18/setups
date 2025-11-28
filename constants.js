@@ -18,7 +18,7 @@ export const HYPERLIQUID = {
   API_MAINNET: 'https://api.hyperliquid.xyz',
   API_TESTNET: 'https://api.hyperliquid-testnet.xyz',
   MIN_DEPOSIT_USDC: 5.0,
-  BUILDER_FEE_MAX: '0.1%'
+  BUILDER_FEE_MAX: '0.02%'
 };
 
 export const MESSAGES = {
