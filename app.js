@@ -20,6 +20,7 @@ function EVPlusApp() {
   const [showDisconnect, setShowDisconnect] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
   const [depositAmount, setDepositAmount] = useState('');
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
 
   // Set up wallet client
   useEffect(() => {
@@ -176,6 +177,8 @@ function EVPlusApp() {
       setTimeout(() => {
         setCurrentStep(4);
         setMessage('');
+        // Show completion modal after a brief delay
+        setTimeout(() => setShowCompletionModal(true), 500);
       }, 2000);
 
     } catch (error) {
@@ -585,62 +588,8 @@ function EVPlusApp() {
               React.createElement('div', { className: 'balance-value' }, `${hlUsdcBalance} USDC`)
             )
           ),
-          parseFloat(hlUsdcBalance) < 300 && React.createElement('div', null,
-            React.createElement('div', { className: 'alert alert-warning', style: { marginTop: '1rem' } },
-              `Recommended: $300+ USDC for optimal trading. Current balance: $${parseFloat(hlUsdcBalance).toFixed(2)}`
-            ),
-            React.createElement('div', { className: 'info-box', style: { marginTop: '1rem' } },
-              React.createElement('label', {
-                style: {
-                  display: 'block',
-                  color: 'var(--text-secondary)',
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  marginBottom: '0.5rem'
-                }
-              }, 'Deposit Amount (USDC)'),
-              React.createElement('div', { style: { display: 'flex', gap: '0.5rem', alignItems: 'center' } },
-                React.createElement('input', {
-                  type: 'number',
-                  value: depositAmount,
-                  onChange: (e) => setDepositAmount(e.target.value),
-                  min: HYPERLIQUID.MIN_DEPOSIT_USDC,
-                  max: usdcBalance,
-                  step: '0.01',
-                  placeholder: `Min: ${HYPERLIQUID.MIN_DEPOSIT_USDC}`,
-                  style: {
-                    flex: 1,
-                    background: 'rgba(0, 0, 0, 0.4)',
-                    border: '1px solid rgba(87, 90, 94, 0.4)',
-                    borderRadius: '0.5rem',
-                    padding: '0.75rem 1rem',
-                    color: 'var(--text-primary)',
-                    fontSize: '1rem',
-                    outline: 'none'
-                  }
-                }),
-                React.createElement('button', {
-                  onClick: () => setDepositAmount(usdcBalance),
-                  className: 'btn-secondary',
-                  type: 'button',
-                  style: { padding: '0.75rem 1.25rem', margin: 0 }
-                }, 'Max')
-              ),
-              React.createElement('p', {
-                style: {
-                  color: 'var(--text-muted)',
-                  fontSize: '0.75rem',
-                  marginTop: '0.5rem',
-                  marginBottom: 0
-                }
-              }, `Available: ${usdcBalance} USDC`)
-            ),
-            React.createElement('button', {
-              onClick: handleDeposit,
-              disabled: isProcessing || !depositAmount || parseFloat(depositAmount) < HYPERLIQUID.MIN_DEPOSIT_USDC || parseFloat(depositAmount) > parseFloat(usdcBalance),
-              className: 'btn-primary',
-              style: { marginTop: '1rem', width: '100%' }
-            }, isProcessing ? 'Processing...' : 'Deposit More USDC')
+          parseFloat(hlUsdcBalance) < 300 && React.createElement('div', { className: 'alert alert-warning', style: { marginTop: '1rem' } },
+            `Recommended: $300+ USDC for optimal trading. Current balance: $${parseFloat(hlUsdcBalance).toFixed(2)}. To deposit more, navigate back to the "Deposit USDC" step using the stepper above.`
           ),
           parseFloat(hlUsdcBalance) >= 300 && React.createElement('div', { className: 'alert alert-success', style: { marginTop: '1rem' } },
             'Your account is funded and ready for trading!'
@@ -665,6 +614,41 @@ function EVPlusApp() {
           className: 'btn-secondary',
           disabled: isProcessing
         }, 'Next →')
+      )
+    ),
+
+    // Completion Modal
+    showCompletionModal && React.createElement('div', { 
+      className: 'modal-overlay',
+      onClick: (e) => {
+        if (e.target.className === 'modal-overlay') {
+          setShowCompletionModal(false);
+        }
+      }
+    },
+      React.createElement('div', { className: 'modal-content' },
+        React.createElement('div', { className: 'modal-header' },
+          React.createElement('h3', { className: 'modal-title' }, 'Ready to Trade'),
+          React.createElement('button', {
+            className: 'modal-close',
+            onClick: () => setShowCompletionModal(false),
+            'aria-label': 'Close'
+          }, '×')
+        ),
+        React.createElement('div', { className: 'modal-body' },
+          React.createElement('p', { className: 'modal-text' },
+            'Your trading agent is configured and ready. Access the main EV+ platform to begin trading on Hyperliquid.'
+          ),
+          React.createElement('a', {
+            href: 'https://shhhatv4notready.evplus.ai/',
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            className: 'modal-link-button'
+          },
+            'Launch Trading Platform',
+            React.createElement('span', { className: 'modal-arrow' }, '→')
+          )
+        )
       )
     )
   );
